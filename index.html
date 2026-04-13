@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Psalms & Proverbs — Bible Study Hub</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0a1a; font-family: system-ui, sans-serif; min-height: 100vh; padding: 20px 16px 60px; color: white; }
+
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #c084fc; font-size: 13px; text-decoration: none; margin-bottom: 20px; }
+    .back-btn:hover { color: white; }
+
+    .plan-header { text-align: center; margin-bottom: 24px; }
+    .plan-header .icon { font-size: 40px; margin-bottom: 8px; }
+    .plan-header h1 { font-size: 22px; font-weight: 900; }
+    .plan-header p { font-size: 13px; color: #9ca3af; margin-top: 4px; }
+    .progress-wrap { margin: 14px auto 0; max-width: 320px; }
+    .progress-track { background: rgba(255,255,255,0.1); border-radius: 20px; height: 6px; }
+    .progress-fill { height: 6px; border-radius: 20px; background: #a855f7; transition: width 0.4s; }
+    .progress-label { font-size: 11px; color: #6b7280; margin-top: 5px; text-align: center; }
+
+    .notes-btn { width: 100%; margin-bottom: 14px; padding: 12px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: white; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+    .notes-btn:hover { background: rgba(168,85,247,0.15); border-color: #a855f755; }
+
+    .day-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: background 0.15s; }
+    .day-item:hover { background: rgba(168,85,247,0.1); }
+    .day-item.done { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.25); }
+    .check-circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #9333ea; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+    .day-item.done .check-circle { background: #22c55e; border-color: #22c55e; }
+    .day-info { flex: 1; min-width: 0; }
+    .day-num { font-size: 10px; color: #6b7280; }
+    .day-passage { font-size: 14px; font-weight: 700; }
+    .day-item.done .day-passage { text-decoration: line-through; color: rgba(255,255,255,0.35); }
+    .day-title { font-size: 11px; color: #c084fc; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .note-badge { font-size: 10px; color: #6b7280; background: rgba(168,85,247,0.2); border-radius: 20px; padding: 2px 8px; white-space: nowrap; flex-shrink: 0; }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .day-header { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+    .day-header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .day-header-meta { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+    .day-header-title { font-size: 20px; font-weight: 900; }
+    .day-header-passage { font-size: 13px; color: #c084fc; margin-top: 2px; }
+    .done-btn { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1.5px solid #9333ea; color: #c084fc; background: transparent; cursor: pointer; white-space: nowrap; flex-shrink: 0; margin-left: 10px; }
+    .done-btn.is-done { background: #22c55e; border-color: #22c55e; color: white; }
+    .day-focus { font-size: 13px; color: #f3e8ff; line-height: 1.6; margin-top: 12px; }
+
+    .section-card { border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+    .section-card.teaching  { background: rgba(107,33,168,0.2); border: 1px solid rgba(168,85,247,0.3); }
+    .section-card.verses    { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+    .section-card.questions { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+    .section-card.notes     { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+    .section-card.ai        { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #c084fc; margin-bottom: 12px; }
+    .teaching-para { font-size: 13px; color: rgba(255,255,255,0.88); line-height: 1.7; margin-bottom: 10px; }
+    .teaching-para:last-child { margin-bottom: 0; }
+    .verse-item { background: rgba(168,85,247,0.12); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 13px; color: #f3e8ff; font-style: italic; line-height: 1.5; }
+    .verse-item:last-child { margin-bottom: 0; }
+    .question-item { display: flex; gap: 10px; margin-bottom: 10px; }
+    .question-item:last-child { margin-bottom: 0; }
+    .q-num { width: 22px; height: 22px; border-radius: 50%; background: #9333ea; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 1px; }
+    .q-text { font-size: 13px; color: #f3e8ff; line-height: 1.6; }
+
+    .note-entry { background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.2); border-radius: 10px; padding: 12px; margin-bottom: 8px; }
+    .note-text { font-size: 13px; color: rgba(255,255,255,0.9); line-height: 1.6; }
+    .note-meta { font-size: 10px; color: #6b7280; margin-top: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .note-delete { background: none; border: none; color: #ef4444; font-size: 14px; cursor: pointer; padding: 0; }
+    .confirm-delete { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 8px 10px; margin-top: 6px; display: flex; align-items: center; gap: 8px; }
+    .confirm-delete span { font-size: 12px; color: #fca5a5; flex: 1; }
+    .confirm-yes { background: #ef4444; border: none; border-radius: 6px; color: white; font-size: 11px; font-weight: 700; padding: 4px 10px; cursor: pointer; }
+    .confirm-no  { background: rgba(255,255,255,0.08); border: none; border-radius: 6px; color: #9ca3af; font-size: 11px; padding: 4px 10px; cursor: pointer; }
+    textarea { width: 100%; background: rgba(10,10,26,0.8); border: 1px solid rgba(168,85,247,0.4); border-radius: 10px; padding: 12px; font-size: 13px; color: white; font-family: system-ui, sans-serif; resize: none; outline: none; margin-top: 4px; }
+    textarea:focus { border-color: #a855f7; }
+    .save-note-btn { width: 100%; margin-top: 8px; padding: 10px; background: #9333ea; border: none; border-radius: 10px; color: white; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .save-note-btn:hover { background: #a855f7; }
+
+    .ai-btn { padding: 6px 14px; background: #9333ea; border: none; border-radius: 20px; color: white; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .ai-btn:disabled { opacity: 0.5; cursor: default; }
+    .ai-result { font-size: 13px; color: #f3e8ff; line-height: 1.7; margin-top: 10px; }
+    .ai-placeholder { font-size: 13px; color: #4b5563; font-style: italic; }
+
+    .history-entry { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+    .history-day-link { font-size: 11px; color: #c084fc; font-weight: 700; cursor: pointer; margin-bottom: 6px; }
+    .history-day-link:hover { color: white; }
+    .history-note-text { font-size: 13px; color: rgba(255,255,255,0.88); line-height: 1.6; }
+    .history-note-date { font-size: 10px; color: #6b7280; margin-top: 4px; }
+
+    .day-nav { display: flex; gap: 10px; margin-top: 4px; }
+    .nav-btn { flex: 1; padding: 12px; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .nav-prev { background: rgba(255,255,255,0.08); color: #9ca3af; }
+    .nav-prev:hover { background: rgba(255,255,255,0.12); }
+    .nav-next { background: #9333ea; color: white; }
+    .nav-next:hover { background: #a855f7; }
+
+    .empty-state { text-align: center; color: #4b5563; padding: 40px 0; font-size: 13px; }
+    .empty-state .e-icon { font-size: 36px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<!-- LIST VIEW -->
+<div id="viewList" class="view active">
+  <a class="back-btn" href="../index.html">← Bible Study Hub</a>
+  <div class="plan-header">
+    <div class="icon">🎵</div>
+    <h1>Psalms & Proverbs</h1>
+    <p>30 days through Israel's songbook and wisdom literature</p>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 30 days completed</div>
+    </div>
+  </div>
+  <button class="notes-btn" onclick="showHistory()">
+    <span>📝 Notes History</span>
+    <span id="notesCount" style="font-size:11px;color:#6b7280;">0 notes ›</span>
+  </button>
+  <div id="dayList"></div>
+</div>
+
+<!-- DAY VIEW -->
+<div id="viewDay" class="view">
+  <a class="back-btn" href="#" onclick="showList();return false;">← All Days</a>
+  <div class="day-header">
+    <div class="day-header-top">
+      <div>
+        <div class="day-header-meta" id="dayMeta"></div>
+        <div class="day-header-title" id="dayTitle"></div>
+        <div class="day-header-passage" id="dayPassage"></div>
+      </div>
+      <button class="done-btn" id="doneBtn" onclick="toggleDone()"></button>
+    </div>
+    <div class="day-focus" id="dayFocus"></div>
+  </div>
+  <div class="section-card teaching">
+    <div class="section-label">📖 Teaching</div>
+    <div id="dayTeaching"></div>
+  </div>
+  <div class="section-card verses">
+    <div class="section-label">🔑 Key Verses</div>
+    <div id="dayVerses"></div>
+  </div>
+  <div class="section-card questions">
+    <div class="section-label">🤔 Study Questions</div>
+    <div id="dayQuestions"></div>
+  </div>
+  <div class="section-card notes">
+    <div class="section-label">✍️ My Notes</div>
+    <div id="notesList"></div>
+    <textarea id="noteInput" rows="3" placeholder="Write your thoughts, answers, or what God is showing you..."></textarea>
+    <button class="save-note-btn" onclick="saveNote()">Save Note</button>
+  </div>
+  <div class="section-card ai">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <div class="section-label" style="margin-bottom:0;">✨ Deeper AI Insight</div>
+      <button class="ai-btn" id="aiBtn" onclick="getInsight()">Get Insight</button>
+    </div>
+    <div id="aiResult"><div class="ai-placeholder">Tap "Get Insight" for cross-references, historical context & extra commentary.</div></div>
+  </div>
+  <div class="day-nav">
+    <button class="nav-btn nav-prev" id="prevBtn" onclick="navDay(-1)">← Previous</button>
+    <button class="nav-btn nav-next" id="nextBtn" onclick="navDay(1)">Next Day →</button>
+  </div>
+</div>
+
+<!-- HISTORY VIEW -->
+<div id="viewHistory" class="view">
+  <a class="back-btn" href="#" onclick="showList();return false;">← All Days</a>
+  <h2 style="font-size:18px;font-weight:900;margin-bottom:4px;">📝 Notes History</h2>
+  <p style="font-size:12px;color:#6b7280;margin-bottom:18px;" id="historySubtitle"></p>
+  <div id="historyList"></div>
+</div>
+
+<script>
+var PLAN = {
+  name: "Psalms & Proverbs",
+  storageKey: "psalms-plan-v1",
+  days: [
+    {day:1,passage:"Psalm 1–2",title:"The Blessed Life and the Coming King",focus:"Psalm 1 opens the entire book with a portrait of the person who flourishes. Psalm 2 introduces the King God has appointed — a direct prophecy of Jesus.",teaching:"Psalm 1 is the doorway into the whole Psalter. It sets up a contrast between two ways of living: the way of the righteous and the way of the wicked. The blessed person doesn't just avoid evil — they delight in God's Word and meditate on it day and night. Meditation here means to mutter or murmur — not emptying the mind, but filling it with Scripture.\n\nThe image of the tree planted by streams of water is significant. A tree doesn't work to produce fruit — it simply stays rooted where the water is. This is the picture of the flourishing life: deeply rooted in God's Word, naturally fruitful.\n\nPsalm 2 is a royal psalm describing God's anointed King who will rule the nations. The New Testament quotes it at Jesus' baptism ('You are my Son'), at the Transfiguration, and in Acts 4 and 13. 'Kiss the Son' (2:12) — a call to submission and trust — is the only appropriate response to who Jesus is.",keyVerses:["Psalm 1:2–3 — But whose delight is in the law of the LORD... That person is like a tree planted by streams of water.","Psalm 2:7 — He said to me, 'You are my son; today I have become your father.'","Psalm 2:12 — Blessed are all who take refuge in him."],questions:["Psalm 1 says the blessed person meditates on God's Word day and night. What would it look like for you to make Scripture a constant presence in your daily life?","The tree doesn't strain to produce fruit — it just stays rooted. Where do you need to simply stay connected to God rather than striving?","Psalm 2 ends with 'blessed are all who take refuge in him.' What does it mean to take refuge in Jesus — what are you running from and running to?"]},
+    {day:2,passage:"Psalm 8; 19",title:"Creation Declares God's Glory",focus:"Two magnificent creation psalms. Psalm 8 marvels at human dignity. Psalm 19 shows how creation and Scripture both reveal God.",teaching:"Psalm 8 opens and closes with the same line: 'LORD, our Lord, how majestic is your name in all the earth!' The whole psalm is enclosed in praise — this is the right posture for all of life. David looks at the vast heavens and feels small — yet God has crowned humanity with glory and honor and given them dominion over creation. This is the image of God (Genesis 1:27) in poetic form.\n\nPsalm 8:2 — 'from the lips of children and infants you have ordained praise' — is quoted by Jesus in Matthew 21:16 when children are shouting 'Hosanna!' in the Temple. Even children recognize what the religious leaders miss.\n\nPsalm 19 moves from general revelation (creation — vv.1–6) to special revelation (Scripture — vv.7–11) to personal application (vv.12–14). Creation tells us God exists and is glorious. Scripture tells us who He is and what He requires. The psalm ends with one of the most honest prayers in the Bible: 'May the words of my mouth and this meditation of my heart be pleasing in your sight.'",keyVerses:["Psalm 8:3–4 — When I consider your heavens... what is mankind that you are mindful of them?","Psalm 19:1 — The heavens declare the glory of God; the skies proclaim the work of his hands.","Psalm 19:14 — May these words of my mouth and this meditation of my heart be pleasing in your sight, LORD, my Rock and my Redeemer."],questions:["Psalm 8 says God has crowned humanity with glory and honor. How does that change how you see yourself — and how you see other people?","Psalm 19 says Scripture revives the soul, makes wise the simple, gives joy to the heart. Which of these do you most need right now?","'May the words of my mouth... be pleasing in your sight' — if you prayed this every morning, what would change about your day?"]},
+    {day:3,passage:"Psalm 22–23",title:"The Cross and the Shepherd",focus:"Psalm 22 is a prophetic cry of desolation that maps precisely onto the crucifixion. Psalm 23 is the most beloved poem ever written — the Good Shepherd.",teaching:"Psalm 22 begins with the words Jesus cried from the cross: 'My God, my God, why have you forsaken me?' Written by David 1,000 years before the crucifixion, it describes details no one could have predicted: mocking crowds (v.7–8), bones pulled out of joint (v.14), heart melted like wax (v.14), hands and feet pierced (v.16), clothes divided by lot (v.18). The New Testament quotes it more than almost any other passage.\n\nBut Psalm 22 doesn't end in desolation — it ends in triumph (vv.24–31). The rejected, suffering one is ultimately vindicated. 'He has not despised or scorned the suffering of the afflicted one' (v.24). God did not ultimately abandon his Son — or us.\n\nPsalm 23 is the most personal psalm in the collection. 'The LORD is my shepherd' — not our shepherd, but my shepherd. Notice the shift in verse 4: David stops talking about God ('he') and starts talking to God ('you are with me'). In the valley of the shadow of death, theology becomes relationship.",keyVerses:["Psalm 22:1 — My God, my God, why have you forsaken me?","Psalm 22:24 — He has not despised or scorned the suffering of the afflicted one.","Psalm 23:4 — Even though I walk through the darkest valley, I will fear no evil, for you are with me."],questions:["Psalm 22 was written before crucifixion was even invented as a practice. How does such precise prophecy strengthen your faith in the Bible?","Jesus quoted Psalm 22:1 from the cross — He felt the full desolation of abandonment so we never have to. Sit with that for a moment. What does it mean for you?","Psalm 23 shifts from 'He' to 'You' at the darkest point. When has God become most real and personal to you in your hardest season?"]},
+    {day:4,passage:"Psalm 27; 34",title:"Light and Deliverance",focus:"Psalm 27 is a bold declaration of confidence in God as light and salvation. Psalm 34 is a song of testimony — God rescues those who call on Him.",teaching:"Psalm 27 opens with one of the most powerful declarations of trust in all Scripture: 'The LORD is my light and my salvation — whom shall I fear?' David is not pretending difficulty doesn't exist. He mentions enemies, evildoers, armies, and war. But his confidence in God is greater than his awareness of danger.\n\nThe single desire of Psalm 27:4 — 'to dwell in the house of the LORD all the days of my life' — is the organizing longing of the whole psalm. Not success, not safety, not comfort — just to be near God. Everything else flows from that.\n\nPsalm 34 is an acrostic psalm (each verse begins with a successive letter of the Hebrew alphabet) written after David pretended to be insane to escape from a Philistine king. Out of that humiliating, desperate experience came: 'Taste and see that the LORD is good' (v.8). The most certain knowledge of God comes through lived experience, not just theology.",keyVerses:["Psalm 27:1 — The LORD is my light and my salvation — whom shall I fear?","Psalm 27:4 — One thing I ask from the LORD, this only do I seek: that I may dwell in the house of the LORD all the days of my life.","Psalm 34:8 — Taste and see that the LORD is good; blessed is the one who takes refuge in him."],questions:["David's one desire was simply to be in God's presence. What is your 'one thing' — what do you most deeply want from God right now?","'Taste and see' is an invitation to personal experience, not just belief. When have you personally tasted God's goodness in a specific situation?","Psalm 34:18 says 'The LORD is close to the brokenhearted.' Are you brokenhearted right now — and how does this promise land for you?"]},
+    {day:5,passage:"Psalm 32; 51",title:"The Joy of Forgiveness and True Repentance",focus:"Two psalms about sin, confession, and restoration. Psalm 32 describes the relief of forgiveness. Psalm 51 is David's raw prayer after his sin with Bathsheba.",teaching:"Psalm 32 describes the physical toll of unconfessed sin: 'When I kept silent, my bones wasted away through my groaning all day long' (v.3). Guilt is not just spiritual — it has a body. But then: 'Then I acknowledged my sin to you... and you forgave the guilt of my sin' (v.5). The relief is immediate and total.\n\nPsalm 51 is one of the most honest prayers in human literature. Written after Nathan confronted David about Bathsheba and Uriah, it doesn't minimize the sin or make excuses. David appeals to God's character — mercy, steadfast love, compassion — not his own goodness.\n\nThe most important verse is 51:10: 'Create in me a pure heart, O God.' The Hebrew word for 'create' (bara) is only ever used of God — no human can do it. David isn't asking God to clean up his existing heart. He is asking for a new one. This is the gospel in a prayer.",keyVerses:["Psalm 32:1 — Blessed is the one whose transgressions are forgiven, whose sins are covered.","Psalm 32:5 — Then I acknowledged my sin to you and did not cover up my iniquity... and you forgave the guilt of my sin.","Psalm 51:10 — Create in me a pure heart, O God, and renew a steadfast spirit within me."],questions:["Psalm 32 describes the physical weight of unconfessed sin. Is there something you've been carrying that needs to be confessed and released?","David asked for a new heart, not just a cleaned-up one. What is the difference — and what does that mean for how you approach change?","Psalm 51:17 says God does not despise a broken and contrite heart. How does that change how you come to God after you fail?"]},
+    {day:6,passage:"Psalm 40; 42–43",title:"Waiting and Thirsting for God",focus:"Psalm 40 is a testimony of waiting on God and being lifted out of the pit. Psalms 42–43 are one long cry of a soul thirsting for God in a season of deep darkness.",teaching:"Psalm 40 opens with 'I waited patiently for the LORD' — the Hebrew is literally 'I waited, waiting.' It is the language of prolonged, active, deliberate waiting. Not passive resignation but expectant trust. And God came: 'He lifted me out of the slimy pit, out of the mud and mire' (v.2). The testimony comes before the prayer — David remembers what God has done before he asks for what he needs.\n\nPsalms 42–43 are almost certainly one psalm, sharing the same recurring refrain (42:5, 42:11, 43:5): 'Why, my soul, are you downcast? Why so disturbed within me? Put your hope in God, for I will yet praise him, my Savior and my God.' The psalmist is talking to himself — preaching truth to his own discouraged soul.\n\nThe opening of Psalm 42 is one of the most beautiful expressions of spiritual longing: 'As the deer pants for streams of water, so my soul pants for you, my God.' The psalmist is not in a spiritual high — he is dry, distant, and mocked. Yet even in the darkness, his longing for God is itself a form of worship.",keyVerses:["Psalm 40:1–2 — I waited patiently for the LORD; he turned to me and heard my cry. He lifted me out of the slimy pit.","Psalm 42:1–2 — As the deer pants for streams of water, so my soul pants for you, my God. My soul thirsts for God, for the living God.","Psalm 42:5 — Why, my soul, are you downcast? Put your hope in God, for I will yet praise him."],questions:["Psalm 40 begins with testimony before petition. When you pray, do you tend to remember what God has already done — or jump straight to what you need?","The psalmist preaches to his own soul: 'Why are you downcast? Put your hope in God.' What truth do you need to preach to yourself right now?","'My soul thirsts for God' — on a scale of 1–10, how thirsty are you for God right now? What would increase that thirst?"]},
+    {day:7,passage:"Psalm 46; 62; 63",title:"God as Refuge, Rock, and Satisfaction",focus:"Three psalms about finding complete security and satisfaction in God alone — even when everything around you is shaking.",teaching:"Psalm 46 is the psalm that inspired Martin Luther's great hymn 'A Mighty Fortress Is Our God.' The opening is breathtaking: 'God is our refuge and strength, an ever-present help in trouble. Therefore we will not fear, though the earth give way and the mountains fall into the heart of the sea' (v.1–2). The psalm doesn't say trouble won't come — it says God is present within the trouble.\n\n'Be still, and know that I am God' (v.10) is perhaps the most misquoted verse in the Psalms. In context it is not a call to quiet time — it is a call to stop striving, stop panicking, stop trying to fix everything by human effort. Let God be God.\n\nPsalm 62 describes the soul at rest: 'Truly my soul finds rest in God; my salvation comes from him' (v.1). The Hebrew word for rest (dumiyyah) means a silent, restful waiting. Then Psalm 63 — written when David was in the desert — expresses a hunger for God that physical desert intensified: 'I thirst for you, my whole being longs for you, in a dry and parched land where there is no water' (v.1).",keyVerses:["Psalm 46:1–2 — God is our refuge and strength, an ever-present help in trouble. Therefore we will not fear.","Psalm 46:10 — Be still, and know that I am God.","Psalm 62:1 — Truly my soul finds rest in God; my salvation comes from him.","Psalm 63:1 — You, God, are my God, earnestly I seek you; I thirst for you, my whole being longs for you."],questions:["'Be still and know that I am God' — what are you striving to control right now that you need to release to God?","Psalm 62 says to pour out your hearts to God (v.8). When was the last time you genuinely poured your heart out to God — not a prayer list, but raw honesty?","David longed for God intensely while in a literal desert. What 'desert' season in your life has made you most aware of your need for God?"]},
+    {day:8,passage:"Psalm 84; 90; 91",title:"Longing for God's Presence, Eternal Perspective, and Shelter",focus:"Three profound psalms: a longing for God's house, Moses's meditation on time and eternity, and the great psalm of divine protection.",teaching:"Psalm 84 is one of the most beautiful expressions of devotion in the Psalter: 'How lovely is your dwelling place, LORD Almighty! My soul yearns, even faints, for the courts of the LORD' (v.1–2). The psalmist is away from the Temple — perhaps in exile — and aches to return. Even the sparrow nesting near the altar is envied. 'Better is one day in your courts than a thousand elsewhere' (v.10) is not hyperbole — it is the testimony of someone who has genuinely experienced God's presence.\n\nPsalm 90 is the only psalm attributed to Moses — and it reads like a man who has watched a generation die in the wilderness. 'A thousand years in your sight are like a watch in the night' (v.4). Human life is like grass that flowers in the morning and withers by evening. Moses prays for wisdom to number our days — to live with an awareness of our brevity before God.\n\nPsalm 91 is the great shelter psalm. 'Whoever dwells in the shelter of the Most High will rest in the shadow of the Almighty' (v.1). Satan actually quoted this psalm when tempting Jesus (Matthew 4:6) — which shows how important it is to read Scripture in context. The psalm is about trusting God in genuine danger, not testing God by manufacturing it.",keyVerses:["Psalm 84:10 — Better is one day in your courts than a thousand elsewhere.","Psalm 90:12 — Teach us to number our days, that we may gain a heart of wisdom.","Psalm 91:1–2 — Whoever dwells in the shelter of the Most High will rest in the shadow of the Almighty. I will say of the LORD, 'He is my refuge and my fortress, my God, in whom I trust.'"],questions:["Psalm 84 says one day in God's courts is better than a thousand elsewhere. Does your life reflect that value — where do you actually spend your time and desire?","Moses prays to 'number our days.' If you truly lived with an awareness of life's brevity, what would you do differently?","Psalm 91 promises protection to those who dwell in God's shelter. What does it mean to actively dwell in God's presence — not just visit occasionally?"]},
+    {day:9,passage:"Psalm 103; 107",title:"Steadfast Love and God's Redemption",focus:"Psalm 103 is the great hymn of God's steadfast love. Psalm 107 tells four stories of people in desperate situations — and God's rescue in each one.",teaching:"Psalm 103 is one of the richest theological poems in the Bible. David begins by commanding his own soul: 'Praise the LORD, my soul; all my inmost being, praise his holy name' (v.1). Praise is not always a feeling — sometimes it is a decision.\n\nThe list of God's benefits (vv.3–5) is staggering: forgives all sins, heals all diseases, redeems from the pit, crowns with love and compassion, satisfies with good things. Then verse 11: 'as high as the heavens are above the earth, so great is his love for those who fear him.' And verse 12: 'as far as the east is from the west, so far has he removed our transgressions from us.' East and west never meet — this is a mathematical description of complete removal.\n\nPsalm 107 tells four stories: wanderers in the desert, prisoners in darkness, the sick near death, sailors in a storm. All four cry to the LORD in their distress. All four are rescued. The refrain appears four times: 'Let them give thanks to the LORD for his unfailing love and his wonderful deeds for mankind.' God's steadfast love (hesed) is the thread running through every crisis.",keyVerses:["Psalm 103:11–12 — As high as the heavens are above the earth, so great is his love for those who fear him; as far as the east is from the west, so far has he removed our transgressions from us.","Psalm 103:13 — As a father has compassion on his children, so the LORD has compassion on those who fear him.","Psalm 107:1 — Give thanks to the LORD, for he is good; his love endures forever."],questions:["Psalm 103:12 says God has removed your transgressions as far as east is from west. Do you actually live like your sins are that completely removed?","'As a father has compassion on his children' — how does your picture of your earthly father affect how you receive God's compassion?","Psalm 107 shows God rescuing people from wildly different situations. Which of the four stories — wanderer, prisoner, sick, storm-tossed — best describes where you are right now?"]},
+    {day:10,passage:"Psalm 119:1–88",title:"The Living Word — Part One",focus:"The longest chapter in the Bible — 176 verses, all about the Word of God. Every verse (almost) references Scripture. Part one covers the first 11 sections.",teaching:"Psalm 119 is an acrostic masterpiece: 22 sections, one for each letter of the Hebrew alphabet, each section containing 8 verses, all beginning with the same Hebrew letter. It is the most sustained meditation on Scripture in all of Scripture.\n\nThe psalmist uses 8 different words for God's Word throughout the psalm: law, statutes, precepts, commands, decrees, word, promise, and ordinances. Together they describe Scripture as something complete, trustworthy, and life-giving from every angle.\n\nThe opening verse sets the tone: 'Blessed are those whose ways are blameless, who walk according to the law of the LORD.' But the psalm is not about perfect behavior — it is about a heart that genuinely loves God's Word. The psalmist weeps when people disobey God's commands (v.136). He treasures Scripture more than gold (v.72). He meditates on it at midnight (v.62). This is not duty — this is devotion.",keyVerses:["Psalm 119:9 — How can a young person stay on the path of purity? By living according to your word.","Psalm 119:11 — I have hidden your word in my heart that I might not sin against you.","Psalm 119:18 — Open my eyes that I may see wonderful things in your law."],questions:["Psalm 119:11 says hiding God's Word in your heart protects from sin. How much of Scripture do you actually have memorized — and what would you like to memorize?","'Open my eyes that I may see wonderful things in your law' (v.18) — have you ever prayed this before reading Scripture? Try it today.","The psalmist finds joy, comfort, freedom, and life in God's Word. Does Scripture feel that alive to you — and if not, what has dimmed it?"]},
+    {day:11,passage:"Psalm 119:89–176",title:"The Living Word — Part Two",focus:"The second half of the greatest meditation on Scripture ever written. God's Word is eternal, a lamp to our feet, and the source of peace.",teaching:"Psalm 119:89: 'Your word, LORD, is eternal; it stands firm in the heavens.' The psalmist has been meditating on Scripture for 88 verses — and arrives at this: the Word of God is not a human document subject to revision. It is as fixed and permanent as creation itself.\n\nThe most famous verse in the entire psalm comes in this section: 'Your word is a lamp to my feet and a light to my path' (v.105). In the ancient world, a lamp illuminated only the next step — not the whole road. This is a picture of daily, moment-by-moment dependence on God's guidance through Scripture. Not a searchlight revealing the whole future, but enough light for the next step.\n\nThe psalm closes with a confession and a plea (v.176): 'I have strayed like a lost sheep. Seek your servant, for I have not forgotten your commands.' After 176 verses of devotion to God's Word, the psalmist ends with humility — not with a sense of having arrived, but with an acknowledgment of still needing to be found.",keyVerses:["Psalm 119:89 — Your word, LORD, is eternal; it stands firm in the heavens.","Psalm 119:105 — Your word is a lamp to my feet and a light to my path.","Psalm 119:165 — Great peace have those who love your law, and nothing can make them stumble."],questions:["'A lamp to my feet' illuminates just the next step. Are you trying to see the whole road, or are you willing to trust God one step at a time?","Psalm 119:165 says great peace comes to those who love God's law. Do you experience Scripture as a source of peace — or more as obligation?","The psalm ends with 'I have strayed like a lost sheep — seek your servant.' Is there an area where you have strayed and need God to come find you?"]},
+    {day:12,passage:"Psalm 121; 130; 139",title:"God Who Watches, Hears, and Knows",focus:"Three beloved psalms: God as your constant keeper, a cry from the depths of despair, and the most profound meditation on God's intimate knowledge of you.",teaching:"Psalm 121 is a psalm of ascent — sung by pilgrims walking up to Jerusalem for the feasts. It answers the question of where our help comes from. 'My help comes from the LORD, the Maker of heaven and earth' (v.2). The rest of the psalm is a series of assurances: He won't let your foot slip. He won't slumber or sleep. He watches over you coming and going, now and forever. The Hebrew word for 'watches' (shamar) appears 6 times in 8 verses — God's watchfulness is relentless.\n\nPsalm 130 begins 'Out of the depths I cry to you, LORD' — one of the most honest opening lines in the Bible. The depths refer to the place of utter helplessness and despair. But the psalmist waits: 'I wait for the LORD more than watchmen wait for the morning' (v.6). The waiting is not passive — it is intense, expectant longing.\n\nPsalm 139 is perhaps the most personal psalm in the entire collection. God knows everything about you — your sitting and rising, your thoughts from afar, your words before they are spoken. He formed you in the womb. He has written every day of your life in his book before one of them came to be. This is not surveillance — this is intimacy.",keyVerses:["Psalm 121:1–2 — I lift up my eyes to the mountains — where does my help come from? My help comes from the LORD, the Maker of heaven and earth.","Psalm 130:1 — Out of the depths I cry to you, LORD.","Psalm 139:13–14 — For you created my inmost being; you knit me together in my mother's womb. I praise you because I am fearfully and wonderfully made."],questions:["Psalm 121 says God watches over your coming and going. How does living with that awareness change how you face your day?","Psalm 130 begins in the depths but ends in hope. What depths are you in right now — and can you say with the psalmist 'I wait for the LORD'?","Psalm 139 says God knew you before you were born and has written all your days. How does being that deeply known — and still loved — affect you?"]},
+    {day:13,passage:"Psalm 145–147",title:"Praise for Who God Is",focus:"Three psalms of pure praise — celebrating God's greatness, compassion, care for the broken, and power over all creation.",teaching:"Psalm 145 is the only psalm in the collection explicitly labeled 'a psalm of praise' (tehillah). It is also an acrostic — every verse begins with a successive Hebrew letter. David is teaching us that praise should be comprehensive, covering every dimension of who God is.\n\nThe heart of Psalm 145 is verse 8: 'The LORD is gracious and compassionate, slow to anger and rich in love.' This is the self-description God gave to Moses in Exodus 34:6 — now David is singing it back to God. To praise God is to tell Him what He has told you about Himself.\n\nPsalm 147 celebrates God's care for the broken alongside His cosmic power: 'He heals the brokenhearted and binds up their wounds. He determines the number of the stars and calls them each by name' (vv.3–4). The same God who names every star tends to every broken heart. The scale of God's power makes His tenderness toward the wounded even more astonishing.",keyVerses:["Psalm 145:8 — The LORD is gracious and compassionate, slow to anger and rich in love.","Psalm 145:18 — The LORD is near to all who call on him, to all who call on him in truth.","Psalm 147:3–4 — He heals the brokenhearted and binds up their wounds. He determines the number of the stars and calls them each by name."],questions:["Psalm 145 praises God for His greatness and His goodness. Which do you find easier to praise God for — His power or His tenderness?","'The LORD is near to all who call on him in truth' (v.18). What does calling on God 'in truth' mean — what would change if you were completely honest in your prayers?","The God who names every star also heals broken hearts. What broken place in your heart are you bringing to that God today?"]},
+    {day:14,passage:"Psalm 148–150",title:"Let Everything Praise",focus:"The great finale of the Psalms — a crescendo of praise that calls all of creation to worship. The final verse is the last word of the entire book.",teaching:"The Psalms end as they should — in an explosion of praise. Psalm 148 calls heaven and earth, angels and armies, sun and moon, sea creatures and mountains, young and old to praise the LORD. This is not sentimental — it is cosmological. The whole created order exists for the praise of its Creator.\n\nPsalm 149 introduces a new element: praise in the assembly of God's people. The individual praise of Psalm 1 has expanded to corporate, communal worship. 'For the LORD takes delight in his people; he crowns the humble with victory' (v.4). God is not indifferent to corporate worship — He delights in it.\n\nPsalm 150 is the exclamation point of the entire book. Six times it says 'praise him.' Every instrument is listed. The final verse — 'Let everything that has breath praise the LORD' — is the last line of the whole Psalter. The book that began with a quiet man meditating on God's Word ends with the entire universe in full-throated worship. This is where everything is heading.",keyVerses:["Psalm 148:13 — Let them praise the name of the LORD, for his name alone is exalted; his splendor is above the earth and the heavens.","Psalm 149:4 — For the LORD takes delight in his people; he crowns the humble with victory.","Psalm 150:6 — Let everything that has breath praise the LORD. Praise the LORD."],questions:["The Psalms move from one man's meditation to the whole universe in praise. How does your personal worship connect to the bigger story of all creation glorifying God?","'Let everything that has breath praise the LORD' — what would it look like for every area of your life — work, relationships, body, mind — to be an act of praise?","Having spent two weeks in the Psalms, what has shifted in how you talk to God or how you think about Him?"]},
+    {day:15,passage:"Proverbs 1–2",title:"The Beginning of Wisdom",focus:"Proverbs opens with its purpose and theme: the fear of the LORD is the beginning of wisdom. Chapter 2 shows what it costs and what it gives.",teaching:"Proverbs 1:1–7 is the introduction to the whole book — its mission statement. It is written primarily to the young, but it is for anyone who wants to gain wisdom, discipline, and understanding. The key verse is 1:7: 'The fear of the LORD is the beginning of wisdom.' This is not the end of wisdom — it is the beginning. Wisdom starts with the right orientation toward God: reverence, awe, and submission.\n\nThe 'fear of the LORD' does not mean terror — it means taking God seriously. It is the posture of someone who knows they are not the center of the universe and acts accordingly. The fool (the opposite of the wise person in Proverbs) is not intellectually stupid — he is morally and spiritually self-centered.\n\nProverbs 2 shows that wisdom is not simply given — it must be sought. 'If you look for it as for silver and search for it as for hidden treasure, then you will understand the fear of the LORD' (2:4–5). The reward of seeking wisdom is knowing God personally. Wisdom is not just practical advice — it is relationship with the God who made the world wisely.",keyVerses:["Proverbs 1:7 — The fear of the LORD is the beginning of wisdom, but fools despise wisdom and instruction.","Proverbs 2:4–5 — If you look for it as for silver and search for it as for hidden treasure, then you will understand the fear of the LORD.","Proverbs 2:6 — For the LORD gives wisdom; from his mouth come knowledge and understanding."],questions:["The 'fear of the LORD' is the foundation of wisdom. What does it mean practically to take God seriously in your everyday decisions?","Wisdom must be sought like hidden treasure. How intentional are you about pursuing wisdom — what does that search look like in your life?","Proverbs says wisdom leads to knowing God personally (2:5). Have you found that growing in wisdom has deepened your relationship with God?"]},
+    {day:16,passage:"Proverbs 3–4",title:"Trust and Guard Your Heart",focus:"Two of the most important chapters in Proverbs. Chapter 3 contains the most famous command in wisdom literature. Chapter 4 contains the most important instruction.",teaching:"Proverbs 3:5–6 is probably the most quoted passage in all of Proverbs: 'Trust in the LORD with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.' The key phrase is 'lean not on your own understanding.' Human wisdom, even at its best, is limited and often wrong. Trusting God means making decisions based on His revealed will even when our own reasoning points elsewhere.\n\nProverbs 3 continues with a remarkable theology of suffering (vv.11–12): 'Do not despise the LORD's discipline.' God's correction is evidence of love — He disciplines 'as a father the son he delights in.' This is quoted in Hebrews 12:5–6 as an encouragement to endure hardship.\n\nProverbs 4:23 contains what is arguably the most important practical instruction in the whole book: 'Above all else, guard your heart, for everything you flows from it.' The heart in Proverbs is not the seat of emotion — it is the seat of will, thought, and desire. What you allow into your heart determines what comes out of your life.",keyVerses:["Proverbs 3:5–6 — Trust in the LORD with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.","Proverbs 3:12 — The LORD disciplines those he loves, as a father the son he delights in.","Proverbs 4:23 — Above all else, guard your heart, for everything you do flows from it."],questions:["'Lean not on your own understanding' — is there a decision you're making right now that you're relying on your own wisdom rather than seeking God's?","Proverbs says God's discipline is a sign of His love. Is there something difficult in your life right now that might be God's loving correction?","'Guard your heart' — what are you currently allowing into your heart (media, relationships, habits) that is shaping you in the wrong direction?"]},
+    {day:17,passage:"Proverbs 8–9",title:"Wisdom Personified",focus:"Proverbs personifies wisdom as a woman calling out in the streets. Chapter 8 is one of the most theologically rich passages in the Old Testament.",teaching:"Proverbs 8 is unique in ancient literature. Wisdom is not just a quality to pursue — she is personified as a person, calling out from the highest points of the city, standing at the crossroads, crying out to everyone who will listen. She is not hidden or exclusive — she is accessible and urgent.\n\nThe climax of the chapter is Proverbs 8:22–31, where wisdom describes herself as present at creation: 'I was there when he set the heavens in place... I was the craftsman at his side.' John 1 echoes this passage: Jesus is the eternal Word through whom all things were made. Early Christian theologians saw Proverbs 8 as pointing to Christ as the wisdom of God (1 Corinthians 1:24).\n\nProverbs 9 presents two competing invitations: Wisdom's feast (vv.1–6) and Folly's lure (vv.13–18). Both call from the same place — the high points of the city. Both offer food and drink. The difference is what they lead to: wisdom leads to life; folly leads to death. The choice between wisdom and folly is always presented as urgent and active — you must choose.",keyVerses:["Proverbs 8:17 — I love those who love me, and those who seek me find me.","Proverbs 8:22 — The LORD brought me forth as the first of his works, before his deeds of old.","Proverbs 9:10 — The fear of the LORD is the beginning of wisdom, and knowledge of the Holy One is understanding."],questions:["Wisdom calls out from the highest points of the city — she is not hidden. Why do you think so many people miss or ignore God's wisdom even when it is accessible?","Proverbs 8 connects wisdom to creation itself — to the very order of the universe. How does that raise your view of wisdom beyond just 'good advice'?","Two voices call to you daily — wisdom and folly. Which one are you currently listening to more, and what makes folly's voice so attractive?"]},
+    {day:18,passage:"Proverbs 10–12",title:"Wise and Foolish Words",focus:"Three chapters packed with practical wisdom — especially about how we use our words. Speech is one of the dominant themes in Proverbs.",teaching:"Proverbs 10–12 mark the transition into the main body of the book — individual proverbs presented two at a time, usually in contrast. The righteous and the wicked, the wise and the fool, the diligent and the lazy are constantly set side by side.\n\nSpeech is a dominant theme in these chapters. 'The mouth of the righteous is a fountain of life' (10:11). 'Whoever spreads slander is a fool' (10:18). 'The words of the reckless pierce like swords, but the tongue of the wise brings healing' (12:18). Words are treated in Proverbs as among the most powerful and consequential things a person does. Life and death are literally in the power of the tongue (18:21).\n\nProverbs is also deeply practical about work and diligence. 'Lazy hands make for poverty, but diligent hands bring wealth' (10:4). 'The diligent find freedom in their work' (12:24). Proverbs does not spiritualize laziness — it calls it what it is and insists that faithful, honest, diligent work is part of living wisely before God.",keyVerses:["Proverbs 10:11 — The mouth of the righteous is a fountain of life.","Proverbs 11:2 — When pride comes, then comes disgrace, but with humility comes wisdom.","Proverbs 12:18 — The words of the reckless pierce like swords, but the tongue of the wise brings healing."],questions:["If your words were recorded today and played back to you, what would they reveal about the state of your heart?","Proverbs links pride and disgrace, humility and wisdom. Where is pride showing up in your life — and what is it costing you?","Who in your life needs you to use your words to bring healing rather than harm this week?"]},
+    {day:19,passage:"Proverbs 15–16",title:"Pride, Humility, and the Plans of the Heart",focus:"Two chapters that sit at the heart of Proverbs — dealing with pride, humility, anger, and the sovereignty of God over human plans.",teaching:"Proverbs 15 and 16 contain some of the most theologically dense material in the book. Proverbs is often misread as simply a self-help manual — these chapters correct that. God is present in every verse: 'The eyes of the LORD are everywhere, keeping watch on the wicked and the good' (15:3). 'Commit to the LORD whatever you do, and he will establish your plans' (16:3).\n\nThe most famous verse in this section — and perhaps in all of Proverbs — is 16:18: 'Pride goes before destruction, a haughty spirit before a fall.' This is not superstition — it is a description of a consistent pattern. Pride is self-deception. It causes a person to overestimate their own strength and underestimate their need for God and others. The fall is often not a punishment imposed from outside — it is the natural consequence of living in a distorted reality.\n\nProverbs 16:9 captures the book's theology of human planning and divine sovereignty: 'In their heart a person plans their course, but the LORD establishes their steps.' We are responsible to plan wisely — and humble enough to hold those plans loosely.",keyVerses:["Proverbs 15:1 — A gentle answer turns away wrath, but a harsh word stirs up anger.","Proverbs 16:3 — Commit to the LORD whatever you do, and he will establish your plans.","Proverbs 16:18 — Pride goes before destruction, a haughty spirit before a fall."],questions:["'A gentle answer turns away wrath' — is there a relationship in your life where a gentler tone would change everything?","'Commit to the LORD whatever you do' — what plans or projects do you need to genuinely commit to God rather than just ask Him to bless?","Pride goes before a fall — where are you most vulnerable to pride right now, and what would humility look like in that area?"]},
+    {day:20,passage:"Proverbs 17–19",title:"Friendship, Integrity, and the Tongue",focus:"Three more chapters of distilled wisdom — on true friendship, integrity under pressure, and the devastating power of careless words.",teaching:"Proverbs 17:17 contains one of the most memorable definitions of friendship in all literature: 'A friend loves at all times, and a brother is born for a time of adversity.' True friendship is not circumstantial — it doesn't wait to see which way things go. It shows up precisely when things are hard.\n\nProverbs 18:21 makes one of the most serious claims in the book: 'The tongue has the power of life and death, and those who love it will eat its fruit.' Words are not neutral — they create realities. This principle underlies the whole biblical understanding of blessing, cursing, prophecy, and proclamation. Jesus said we will give account for every careless word (Matthew 12:36).\n\nProverbs 19:17 contains a surprising teaching on generosity: 'Whoever is kind to the poor lends to the LORD, and he will reward them for what they have done.' Kindness to the vulnerable is not charity — it is a transaction with God Himself. God personally takes responsibility for repaying those who give to the poor.",keyVerses:["Proverbs 17:17 — A friend loves at all times, and a brother is born for a time of adversity.","Proverbs 18:21 — The tongue has the power of life and death, and those who love it will eat its fruit.","Proverbs 19:17 — Whoever is kind to the poor lends to the LORD, and he will reward them for what they have done."],questions:["Proverbs 17:17 defines a friend as someone who loves at all times. Are you that kind of friend — and do you have that kind of friend?","'The tongue has the power of life and death.' Think about the last 24 hours — have your words given more life or caused more death?","'Kindness to the poor lends to the LORD.' How seriously do you take generosity to the vulnerable as a spiritual practice?"]},
+    {day:21,passage:"Proverbs 22–23",title:"Train Up a Child",focus:"Practical wisdom for parenting, discipline, money, and the table. One of the most practically applicable sections in all of Proverbs.",teaching:"Proverbs 22:6 is one of the most debated verses in the book: 'Start children off on the way they should go, and even when they are old they will not turn from it.' This is a proverb — a general principle, not an absolute promise. Parents have profound influence, but children are also moral agents. The verse is a call to intentional, early formation — not a guarantee.\n\nProverbs 22:7 contains a sobering financial principle: 'The rich rule over the poor, and the borrower is slave to the lender.' Proverbs takes debt seriously — not as a moral failing but as a reduction of freedom. The wise person structures their financial life to maximize freedom, not obligation.\n\nProverbs 23:4–5 warns against exhausting yourself to get rich: 'Do not wear yourself out to get rich; do not trust your own cleverness. Cast but a glance at riches, and they are gone, for they will surely sprout wings and fly off to the sky like an eagle.' The pursuit of wealth is not wrong — the exhausting, all-consuming pursuit of it is.",keyVerses:["Proverbs 22:6 — Start children off on the way they should go, and even when they are old they will not turn from it.","Proverbs 22:7 — The rich rule over the poor, and the borrower is slave to the lender.","Proverbs 23:7 — For as he thinks within himself, so he is."],questions:["Proverbs 22:6 calls for intentional, early formation. What values and habits are you most intentionally instilling in the young people in your life?","'The borrower is slave to the lender.' How does your current relationship with debt or money affect your freedom and your ability to follow God?","'As he thinks within himself, so he is' (23:7). What do your private thoughts reveal about who you actually are?"]},
+    {day:22,passage:"Proverbs 27–28",title:"Honest Friendship and Integrity",focus:"The value of honest friends who wound you, the danger of flattery, and what integrity looks like in a world that rewards compromise.",teaching:"Proverbs 27:5–6 contains one of the most counter-cultural teachings in Proverbs: 'Better is open rebuke than hidden love. Wounds from a friend can be trusted, but an enemy multiplies kisses.' We live in a culture of flattery — everyone affirms, no one confronts. Proverbs says a friend who tells you the hard truth is more valuable than someone who only encourages you.\n\nProverbs 27:17 — 'As iron sharpens iron, so one person sharpens another' — is one of the most quoted verses on friendship. Sharpening is not comfortable. Iron on iron creates friction, heat, and sparks. Real friendship involves challenge and accountability, not just warmth and agreement.\n\nProverbs 28:13 restates the principle of Psalm 32: 'Whoever conceals their sins does not prosper, but the one who confesses and renounces them finds mercy.' Concealment and prosperity cannot coexist. Confession and mercy always can.",keyVerses:["Proverbs 27:6 — Wounds from a friend can be trusted, but an enemy multiplies kisses.","Proverbs 27:17 — As iron sharpens iron, so one person sharpens another.","Proverbs 28:13 — Whoever conceals their sins does not prosper, but the one who confesses and renounces them finds mercy."],questions:["Do you have a friend who is willing to wound you with the truth? Are you willing to be that friend to someone else?","'Iron sharpens iron' — who is currently sharpening you, and who are you sharpening? Is this relationship actually creating friction, or just warmth?","Proverbs 28:13 connects concealment with failure and confession with mercy. Is there something you've been concealing that needs to be confessed?"]},
+    {day:23,passage:"Proverbs 29–30",title:"Justice, Humility, and Agur's Prayer",focus:"Proverbs 29 deals with justice and leadership. Chapter 30 contains the famous prayer of Agur — one of the most honest and wise prayers about wealth and poverty.",teaching:"Proverbs 29:18 is often quoted but frequently misunderstood: 'Where there is no revelation, people cast off restraint.' The word translated 'revelation' (chazon) means prophetic vision or God's Word. Without Scripture as a guide, societies and individuals fall apart. This is not about visionary leadership — it is about the necessity of divine revelation for ordered life.\n\nProverbs 30 is written by a man named Agur who begins with startling humility: 'I am weary, God, but I can prevail... I have not learned wisdom, nor have I attained to the knowledge of the Holy One' (30:1–3). This is not false modesty — it is the recognition that all human wisdom is ultimately limited before God.\n\nAgur's prayer (30:7–9) is one of the wisest prayers in the Bible: 'Give me neither poverty nor riches, but give me only my daily bread.' He asks for enough — not too little (which might lead to stealing and dishonoring God) and not too much (which might lead to self-sufficiency and forgetting God). This is the wisdom behind the Lord's Prayer: 'Give us today our daily bread.'",keyVerses:["Proverbs 29:18 — Where there is no revelation, people cast off restraint; but blessed is the one who heeds wisdom's instruction.","Proverbs 30:8–9 — Give me neither poverty nor riches, but give me only my daily bread. Otherwise, I may have too much and disown you... or I may become poor and steal.","Proverbs 30:5 — Every word of God is flawless; he is a shield to those who take refuge in him."],questions:["Agur prays for 'enough' — not poverty, not riches. How would you describe your relationship with enough? Do you tend to want more, or fear having less?","'Every word of God is flawless' — how does your daily life reflect that confidence in Scripture?","Proverbs 29:18 says without God's revelation, people cast off restraint. What happens in your life when you neglect Scripture?"]},
+    {day:24,passage:"Proverbs 31:1–9",title:"A Mother's Wisdom for a King",focus:"The opening of the final chapter — a mother's instruction to her son about the dangers of women, wine, and the call to speak up for the poor.",teaching:"Proverbs 31 opens with an often-overlooked section: the words of King Lemuel's mother (vv.1–9). This is remarkable — a woman's wisdom, passed to a king, preserved in Scripture. The queen mother is not giving soft comfort — she is giving hard-edged instruction.\n\nShe warns him about sexual immorality (v.3): 'Do not spend your strength on women, your vigor on those who ruin kings.' She warns about alcohol (vv.4–7): kings who drink lose their judgment and forget justice. She has a high view of leadership — kings are called to exceptional standards precisely because they hold power over others.\n\nThen she gives him his mission (vv.8–9): 'Speak up for those who cannot speak for themselves, for the rights of all who are destitute. Speak up and judge fairly; defend the rights of the poor and needy.' Leadership is not primarily about power — it is about advocacy for the vulnerable. This is the standard against which all authority will be judged.",keyVerses:["Proverbs 31:3 — Do not spend your strength on women, your vigor on those who ruin kings.","Proverbs 31:8–9 — Speak up for those who cannot speak for themselves, for the rights of all who are destitute. Speak up and judge fairly; defend the rights of the poor and needy."],questions:["A mother's wisdom shaped a king. Who has been the most formative voice of wisdom in your life — and how do you honor that?","The queen mother warns against what ruins leaders: sexual compromise and dulled judgment. What are the specific vulnerabilities in your life that could ruin you?","'Speak up for those who cannot speak for themselves' — who in your life or community has no voice, and what would it look like for you to speak up for them?"]},
+    {day:25,passage:"Proverbs 31:10–31",title:"The Woman of Noble Character",focus:"The famous closing poem of Proverbs — an acrostic portrait of a woman of excellence. Often misread as a performance checklist, it is actually a portrait of wisdom made flesh.",teaching:"Proverbs 31:10–31 is an acrostic poem — each verse begins with a successive letter of the Hebrew alphabet — forming a kind of portrait or ode. Importantly, this woman is not held up as a standard to make women feel inadequate. She is wisdom personified — the same wisdom of chapter 8 now described in a life fully lived.\n\nNotice what the poem emphasizes: she is an entrepreneur (v.16, 24), a property owner (v.16), physically strong (v.17), generous to the poor (v.20), a teacher (v.26), and above all, a woman who fears the LORD (v.30). The famous verse 30 — 'Charm is deceptive, and beauty is fleeting; but a woman who fears the LORD is to be praised' — is the climax of the whole poem. After 30 verses describing her many excellent qualities, the poem says: it all flows from this one thing — her fear of God.\n\nThe poem ends with a call to honor: 'Honor her for all that her hands have done, and let her works bring her praise at the city gate' (v.31). This is not just a description of a woman — it is a picture of what a life built on wisdom looks like from the outside.",keyVerses:["Proverbs 31:10 — A wife of noble character who can find? She is worth far more than rubies.","Proverbs 31:26 — She speaks with wisdom, and faithful instruction is on her tongue.","Proverbs 31:30 — Charm is deceptive, and beauty is fleeting; but a woman who fears the LORD is to be praised."],questions:["The woman of Proverbs 31 is described as the embodiment of wisdom. Which of her qualities do you most want to cultivate in your own life?","'Charm is deceptive, beauty is fleeting' — what do you actually base your sense of worth on? What does God say it should be based on?","Having completed Psalms and now Proverbs, what is the single most important thing you've learned or been changed by in this 30-day plan?"]},
+    {day:26,passage:"Psalm 46; Proverbs 3:5–6",title:"When the World Shakes — Trust and Surrender",focus:"A combined study for days when life is unstable. Two of the most powerful passages on trust in the entire Bible.",teaching:"Sometimes life shakes. A diagnosis, a relationship ending, a job lost, a dream deferred. These two passages were written for exactly those moments.\n\nPsalm 46 was written in the context of national crisis — armies at the gates, the earth literally shaking. And yet: 'God is our refuge and strength, an ever-present help in trouble.' The word 'refuge' (machseh) means a shelter you run into, not a feeling you manufacture. God is not a concept to be understood — He is a shelter to be entered.\n\n'Be still and know that I am God' (v.10) — the Hebrew word for 'be still' (raphah) means to let go, to drop, to release your grip. It is an active letting go, not passive resignation. You must choose to release what you are clutching.\n\nProverbs 3:5–6 tells us what that release looks like in practice: trust with the whole heart, lean not on your own understanding, acknowledge Him in all your ways. The result is not that the path becomes easy — it is that He makes it straight, meaning purposeful and directed even when it is hard.",keyVerses:["Psalm 46:1 — God is our refuge and strength, an ever-present help in trouble.","Psalm 46:10 — Be still, and know that I am God.","Proverbs 3:5–6 — Trust in the LORD with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight."],questions:["What are you currently clutching that God is asking you to release to Him?","'Lean not on your own understanding' — is there a situation right now where your understanding and God's Word are pointing in different directions? Which are you following?","How have you seen God be a refuge — a real shelter — in a specific hard season of your life?"]},
+    {day:27,passage:"Psalm 22; Proverbs 8:17",title:"When You Feel Abandoned — Finding God in the Dark",focus:"A study for seasons of spiritual dryness, doubt, or feeling far from God. Psalm 22 takes abandonment seriously. Proverbs 8 promises that those who seek will find.",teaching:"'My God, my God, why have you forsaken me?' — this is not a failure of faith. This is faith being tested to its absolute limit. David wrote Psalm 22 in a moment of genuine desolation. Jesus prayed it from the cross. The feeling of abandonment is real, and Scripture does not minimize it or rush past it.\n\nBut the psalm doesn't end in abandonment. Verse 24: 'He has not despised or scorned the suffering of the afflicted one; he has not hidden his face from him but has listened to his cry for help.' The feeling of abandonment was real. The abandonment itself was not. God had not hidden His face — He had simply not yet resolved the crisis.\n\nProverbs 8:17 is one of the most direct promises in the wisdom literature: 'I love those who love me, and those who seek me find me.' Wisdom — and the God of wisdom — is findable. He is not playing hide and seek. The seeking itself is part of the process of drawing near.",keyVerses:["Psalm 22:1 — My God, my God, why have you forsaken me? Why are you so far from saving me?","Psalm 22:24 — He has not despised or scorned the suffering of the afflicted one; he has not hidden his face from him.","Proverbs 8:17 — I love those who love me, and those who seek me find me."],questions:["Have you ever felt genuinely abandoned by God? Were you able to bring that feeling honestly to Him — or did it feel too dangerous to say out loud?","Psalm 22 ends in praise despite beginning in desolation. What is the process that takes someone from 'Why have you forsaken me?' to 'He has not despised my suffering'?","'Those who seek me find me.' Are you currently seeking — and what does that seeking look like in your daily life?"]},
+    {day:28,passage:"Psalm 103; Proverbs 16:9",title:"God's Steadfast Love and Your Plans",focus:"A combined meditation on the love of God and the relationship between human planning and divine sovereignty.",teaching:"Psalm 103 and Proverbs 16:9 together give us the full picture of the Christian life: we are deeply loved by a God who is also fully sovereign over our plans.\n\nPsalm 103:8–12 is the heart of the entire psalm: 'The LORD is compassionate and gracious, slow to anger, abounding in love. He will not always accuse, nor will he harbor his anger forever; he does not treat us as our sins deserve or repay us according to our iniquities. For as high as the heavens are above the earth, so great is his love for those who fear him; as far as the east is from the west, so far has he removed our transgressions from us.' This is the Old Testament version of the gospel.\n\nProverbs 16:9 adds the other dimension: 'In their heart a person plans their course, but the LORD establishes their steps.' We are not passive — we plan, we act, we make decisions. But we hold those plans loosely, knowing God is the one who ultimately establishes the steps. This is not fatalism — it is the peace that comes from knowing a loving God is working behind your plans.",keyVerses:["Psalm 103:8 — The LORD is compassionate and gracious, slow to anger, abounding in love.","Psalm 103:12 — As far as the east is from the west, so far has he removed our transgressions from us.","Proverbs 16:9 — In their heart a person plans their course, but the LORD establishes their steps."],questions:["Psalm 103 says God doesn't treat us as our sins deserve. Do you live as if that's true — or do you still carry guilt for things God has already removed?","'As far as the east is from the west' — this is mathematical infinity. How does the completeness of your forgiveness change how you approach God today?","'A person plans their course, but the LORD establishes their steps' — is there a plan you're holding so tightly that you can't let God redirect it?"]},
+    {day:29,passage:"Psalm 139; Proverbs 4:23",title:"Known by God, Guard Your Heart",focus:"The deepest meditation on God's knowledge of you — paired with the most important practical instruction in all of Proverbs.",teaching:"Psalm 139 and Proverbs 4:23 together form a complete picture: God knows everything about your inner life — and you are responsible for guarding it.\n\nPsalm 139 is not surveillance — it is intimacy. 'You have searched me, LORD, and you know me' (v.1). The Hebrew word for 'searched' (chaqar) is used of mining — going deep to find what is hidden. God has mined the depths of who you are. He knows your thoughts before you think them, your words before you speak them. He was present at your formation in the womb. He has written every day of your life in His book.\n\nAnd knowing all of this — He still loves you. He still pursues you. That is the astonishing thing.\n\nProverbs 4:23 — 'Above all else, guard your heart, for everything you do flows from it' — is the practical response to being known. If God sees everything in your heart, and if everything in your life flows from your heart, then what goes into your heart matters enormously. This is not paranoia — it is stewardship of the most important thing you have.",keyVerses:["Psalm 139:1 — You have searched me, LORD, and you know me.","Psalm 139:13–14 — For you created my inmost being; you knit me together in my mother's womb. I praise you because I am fearfully and wonderfully made.","Proverbs 4:23 — Above all else, guard your heart, for everything you do flows from it."],questions:["God knows everything about you — your darkest thoughts, your hidden shame — and still pursues you. Does that knowledge comfort you or frighten you, and why?","'Fearfully and wonderfully made' — do you actually believe that about yourself? What makes it hard to receive?","'Guard your heart' — what one thing could you start doing or stop doing this week to better guard what goes into your heart?"]},
+    {day:30,passage:"Psalm 150; Proverbs 31:30",title:"Where Wisdom Ends — In Praise",focus:"The final day. The Psalms end with all creation in praise. Proverbs ends with the fear of the LORD. Both books arrive at the same destination.",teaching:"We have spent 30 days in two of the greatest books ever written. The Psalms taught us how to talk to God — honestly, desperately, joyfully, angrily, in wonder and in grief. Proverbs taught us how to live before God — wisely, humbly, generously, with words that heal and plans held loosely.\n\nBoth books end at the same place.\n\nPsalm 150 ends: 'Let everything that has breath praise the LORD.' All the grief of Psalm 22, all the confession of Psalm 51, all the waiting of Psalm 40, all the longing of Psalm 42 — it all arrives here. In praise.\n\nProverbs 31:30 ends: 'A woman who fears the LORD is to be praised.' All the wisdom of 31 chapters, all the practical teaching on words and money and friendship and integrity — it all flows from one thing. The fear of the LORD.\n\nThe fear of the LORD is the beginning of wisdom (Proverbs 1:7). 'Let everything that has breath praise the LORD' (Psalm 150:6). Begin in reverence. End in praise. Live everything in between in that space.",keyVerses:["Psalm 150:6 — Let everything that has breath praise the LORD. Praise the LORD.","Proverbs 31:30 — Charm is deceptive, and beauty is fleeting; but a woman who fears the LORD is to be praised.","Proverbs 1:7 — The fear of the LORD is the beginning of wisdom."],questions:["The Psalms taught you to talk to God. Has your prayer life changed over these 30 days — are you more honest, more bold, more desperate, more grateful?","Proverbs taught you to live wisely. What is the single most practical thing you will carry out of this plan into your everyday life?","'Let everything that has breath praise the LORD.' What would it look like for your whole life — not just your Sunday mornings — to be an act of praise?"]}
+  ]
+};
+
+// ── Storage ────────────────────────────────────────────────────────────────
+function getData() {
+  try { return JSON.parse(localStorage.getItem(PLAN.storageKey) || '{}'); } catch(e) { return {}; }
+}
+function saveData(d) {
+  try { localStorage.setItem(PLAN.storageKey, JSON.stringify(d)); } catch(e) {}
+}
+
+function syncCalendar(isDone) {
+  var CAL_KEY = 'bsh-calendar-v1';
+  var calId = 'psalms';
+  try {
+    var cal = JSON.parse(localStorage.getItem(CAL_KEY) || '{}');
+    var t = new Date();
+    var iso = t.getFullYear() + '-' + (t.getMonth()+1<10?'0':'') + (t.getMonth()+1) + '-' + (t.getDate()<10?'0':'') + t.getDate();
+    if (!cal[iso]) cal[iso] = [];
+    var idx = cal[iso].indexOf(calId);
+    if (isDone && idx === -1) cal[iso].push(calId);
+    if (!isDone && idx !== -1) cal[iso].splice(idx, 1);
+    if (!cal[iso].length) delete cal[iso];
+    localStorage.setItem(CAL_KEY, JSON.stringify(cal));
+  } catch(e) {}
+}
+
+// ── State ──────────────────────────────────────────────────────────────────
+var currentDayIdx = 0;
+var confirmingDelete = null;
+
+// ── Views ──────────────────────────────────────────────────────────────────
+function showView(id) {
+  document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function showList()    { renderList(); showView('viewList'); }
+function showHistory() { renderHistory(); showView('viewHistory'); }
+function showDay(idx)  { currentDayIdx = idx; renderDay(); showView('viewDay'); }
+
+// ── Render list ────────────────────────────────────────────────────────────
+function renderList() {
+  var data = getData();
+  var completed = data.completed || {};
+  var notes = data.notes || {};
+  var doneCount = Object.keys(completed).filter(function(k) { return completed[k]; }).length;
+  var total = PLAN.days.length;
+  var pct = Math.round(doneCount / total * 100);
+
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = doneCount + ' / ' + total + ' days completed';
+
+  var totalNotes = Object.values(notes).reduce(function(s, a) { return s + (a ? a.length : 0); }, 0);
+  document.getElementById('notesCount').textContent = totalNotes + ' note' + (totalNotes !== 1 ? 's' : '') + ' \u203a';
+
+  var html = '';
+  PLAN.days.forEach(function(day, i) {
+    var done = !!completed[i];
+    var dayNotes = notes[i] || [];
+    html += '<div class="day-item' + (done ? ' done' : '') + '" onclick="showDay(' + i + ')">'
+      + '<div class="check-circle" onclick="event.stopPropagation();quickToggle(' + i + ')">' + (done ? '✓' : '') + '</div>'
+      + '<div class="day-info">'
+      + '<div class="day-num">Day ' + day.day + '</div>'
+      + '<div class="day-passage">' + day.passage + '</div>'
+      + '<div class="day-title">' + day.title + '</div>'
+      + '</div>'
+      + (dayNotes.length ? '<div class="note-badge">' + dayNotes.length + ' note' + (dayNotes.length > 1 ? 's' : '') + '</div>' : '')
+      + '</div>';
+  });
+  document.getElementById('dayList').innerHTML = html;
+}
+
+function quickToggle(idx) {
+  var data = getData();
+  if (!data.completed) data.completed = {};
+  data.completed[idx] = !data.completed[idx];
+  saveData(data);
+  syncCalendar(data.completed[idx]);
+  renderList();
+}
+
+// ── Render day ─────────────────────────────────────────────────────────────
+function renderDay() {
+  var data = getData();
+  var completed = data.completed || {};
+  var day = PLAN.days[currentDayIdx];
+  var done = !!completed[currentDayIdx];
+
+  document.getElementById('dayMeta').textContent = 'Day ' + day.day + ' of ' + PLAN.days.length;
+  document.getElementById('dayTitle').textContent = day.title;
+  document.getElementById('dayPassage').textContent = day.passage;
+  document.getElementById('dayFocus').textContent = day.focus;
+
+  var btn = document.getElementById('doneBtn');
+  btn.textContent = done ? '✓ Done' : 'Mark Done';
+  btn.className = 'done-btn' + (done ? ' is-done' : '');
+
+  document.getElementById('dayTeaching').innerHTML = day.teaching.split('\n\n').map(function(p) {
+    return '<div class="teaching-para">' + p + '</div>';
+  }).join('');
+
+  document.getElementById('dayVerses').innerHTML = day.keyVerses.map(function(v) {
+    return '<div class="verse-item">' + v + '</div>';
+  }).join('');
+
+  document.getElementById('dayQuestions').innerHTML = day.questions.map(function(q, i) {
+    return '<div class="question-item"><div class="q-num">' + (i+1) + '</div><div class="q-text">' + q + '</div></div>';
+  }).join('');
+
+  renderNotes();
+
+  document.getElementById('prevBtn').style.display = currentDayIdx > 0 ? 'block' : 'none';
+  document.getElementById('nextBtn').style.display = currentDayIdx < PLAN.days.length - 1 ? 'block' : 'none';
+
+  document.getElementById('aiResult').innerHTML = '<div class="ai-placeholder">Tap "Get Insight" for cross-references, historical context & extra commentary.</div>';
+  var aiBtn = document.getElementById('aiBtn');
+  aiBtn.disabled = false;
+  aiBtn.textContent = 'Get Insight';
+  aiBtn.style.display = 'inline-block';
+
+  document.getElementById('noteInput').value = '';
+  confirmingDelete = null;
+}
+
+function renderNotes() {
+  var data = getData();
+  var dayNotes = (data.notes || {})[currentDayIdx] || [];
+  var html = '';
+  dayNotes.forEach(function(n, ni) {
+    html += '<div class="note-entry">'
+      + '<div class="note-text">' + escHtml(n.text) + '</div>'
+      + '<div class="note-meta"><span>' + n.date + '</span>'
+      + '<button class="note-delete" onclick="askDelete(' + ni + ')">🗑</button></div>'
+      + (confirmingDelete === ni
+        ? '<div class="confirm-delete"><span>Delete this note?</span>'
+          + '<button class="confirm-yes" onclick="doDelete(' + ni + ')">Delete</button>'
+          + '<button class="confirm-no" onclick="cancelDelete()">Cancel</button></div>'
+        : '')
+      + '</div>';
+  });
+  document.getElementById('notesList').innerHTML = html;
+}
+
+function askDelete(ni)  { confirmingDelete = ni; renderNotes(); }
+function cancelDelete() { confirmingDelete = null; renderNotes(); }
+function doDelete(ni) {
+  var data = getData();
+  if (!data.notes) data.notes = {};
+  if (!data.notes[currentDayIdx]) data.notes[currentDayIdx] = [];
+  data.notes[currentDayIdx].splice(ni, 1);
+  saveData(data);
+  confirmingDelete = null;
+  renderNotes();
+}
+
+function saveNote() {
+  var text = document.getElementById('noteInput').value.trim();
+  if (!text) return;
+  var data = getData();
+  if (!data.notes) data.notes = {};
+  if (!data.notes[currentDayIdx]) data.notes[currentDayIdx] = [];
+  data.notes[currentDayIdx].push({ text: text, date: new Date().toLocaleString() });
+  saveData(data);
+  document.getElementById('noteInput').value = '';
+  confirmingDelete = null;
+  renderNotes();
+}
+
+function toggleDone() {
+  var data = getData();
+  if (!data.completed) data.completed = {};
+  data.completed[currentDayIdx] = !data.completed[currentDayIdx];
+  saveData(data);
+  syncCalendar(data.completed[currentDayIdx]);
+  renderDay();
+}
+
+function navDay(dir) {
+  currentDayIdx += dir;
+  renderDay();
+  window.scrollTo(0, 0);
+}
+
+// ── History ────────────────────────────────────────────────────────────────
+function renderHistory() {
+  var data = getData();
+  var notes = data.notes || {};
+  var all = [];
+  Object.keys(notes).forEach(function(idx) {
+    (notes[idx] || []).forEach(function(n, ni) {
+      all.push({ idx: parseInt(idx), ni: ni, note: n });
+    });
+  });
+  all.sort(function(a, b) { return new Date(b.note.date) - new Date(a.note.date); });
+
+  document.getElementById('historySubtitle').textContent = all.length + ' note' + (all.length !== 1 ? 's' : '') + ' across ' + PLAN.name;
+
+  if (!all.length) {
+    document.getElementById('historyList').innerHTML = '<div class="empty-state"><div class="e-icon">✍️</div><p>No notes yet.</p><p style="margin-top:6px;">Go into any day and save a note — it will appear here.</p></div>';
+    return;
+  }
+
+  document.getElementById('historyList').innerHTML = all.map(function(item) {
+    var day = PLAN.days[item.idx];
+    return '<div class="history-entry">'
+      + '<div class="history-day-link" onclick="showDay(' + item.idx + ')">Day ' + day.day + ' · ' + day.passage + ' — ' + day.title + ' \u203a</div>'
+      + '<div class="history-note-text">' + escHtml(item.note.text) + '</div>'
+      + '<div class="history-note-date">' + item.note.date + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+// ── AI Insight ─────────────────────────────────────────────────────────────
+function getInsight() {
+  var day = PLAN.days[currentDayIdx];
+  var btn = document.getElementById('aiBtn');
+  btn.disabled = true;
+  btn.textContent = 'Loading...';
+  document.getElementById('aiResult').innerHTML = '<div class="ai-placeholder">Thinking...</div>';
+
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: 'You are a warm Bible teacher. The student is studying ' + day.passage + ' — "' + day.title + '" in a Psalms and Proverbs reading plan. Give 3–4 sentences of deeper insight: a cross-reference to another Scripture, a cultural or historical detail, and one personal application. Rich but accessible.' }]
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    var text = (d.content && d.content[0] && d.content[0].text) || 'Could not load insight.';
+    document.getElementById('aiResult').innerHTML = '<div class="ai-result">' + escHtml(text) + '</div>';
+    btn.style.display = 'none';
+  })
+  .catch(function() {
+    document.getElementById('aiResult').innerHTML = '<div class="ai-placeholder">Could not load. Please try again.</div>';
+    btn.disabled = false;
+    btn.textContent = 'Try Again';
+  });
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+renderList();
+</script>
+</body>
+</html>
