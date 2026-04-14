@@ -7,10 +7,8 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #0a0a1a; font-family: system-ui, sans-serif; min-height: 100vh; padding: 20px 16px 60px; color: white; }
-
     .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #c084fc; font-size: 13px; text-decoration: none; margin-bottom: 20px; }
     .back-btn:hover { color: white; }
-
     .plan-header { text-align: center; margin-bottom: 24px; }
     .plan-header .icon { font-size: 40px; margin-bottom: 8px; }
     .plan-header h1 { font-size: 22px; font-weight: 900; }
@@ -19,10 +17,8 @@
     .progress-track { background: rgba(255,255,255,0.1); border-radius: 20px; height: 6px; }
     .progress-fill { height: 6px; border-radius: 20px; background: #a855f7; transition: width 0.4s; }
     .progress-label { font-size: 11px; color: #6b7280; margin-top: 5px; text-align: center; }
-
     .notes-btn { width: 100%; margin-bottom: 14px; padding: 12px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: white; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; text-align: left; }
     .notes-btn:hover { background: rgba(168,85,247,0.15); border-color: #a855f755; }
-
     .day-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: background 0.15s; }
     .day-item:hover { background: rgba(168,85,247,0.1); }
     .day-item.done { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.25); }
@@ -34,10 +30,8 @@
     .day-item.done .day-passage { text-decoration: line-through; color: rgba(255,255,255,0.35); }
     .day-title { font-size: 11px; color: #c084fc; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .note-badge { font-size: 10px; color: #6b7280; background: rgba(168,85,247,0.2); border-radius: 20px; padding: 2px 8px; white-space: nowrap; flex-shrink: 0; }
-
     .view { display: none; }
     .view.active { display: block; }
-
     .day-header { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
     .day-header-top { display: flex; justify-content: space-between; align-items: flex-start; }
     .day-header-meta { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
@@ -46,7 +40,6 @@
     .done-btn { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 1.5px solid #9333ea; color: #c084fc; background: transparent; cursor: pointer; white-space: nowrap; flex-shrink: 0; margin-left: 10px; }
     .done-btn.is-done { background: #22c55e; border-color: #22c55e; color: white; }
     .day-focus { font-size: 13px; color: #f3e8ff; line-height: 1.6; margin-top: 12px; }
-
     .section-card { border-radius: 14px; padding: 16px; margin-bottom: 14px; }
     .section-card.teaching  { background: rgba(107,33,168,0.2); border: 1px solid rgba(168,85,247,0.3); }
     .section-card.verses    { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
@@ -62,7 +55,6 @@
     .question-item:last-child { margin-bottom: 0; }
     .q-num { width: 22px; height: 22px; border-radius: 50%; background: #9333ea; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 1px; }
     .q-text { font-size: 13px; color: #f3e8ff; line-height: 1.6; }
-
     .note-entry { background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.2); border-radius: 10px; padding: 12px; margin-bottom: 8px; }
     .note-text { font-size: 13px; color: rgba(255,255,255,0.9); line-height: 1.6; }
     .note-meta { font-size: 10px; color: #6b7280; margin-top: 6px; display: flex; justify-content: space-between; align-items: center; }
@@ -75,34 +67,29 @@
     textarea:focus { border-color: #a855f7; }
     .save-note-btn { width: 100%; margin-top: 8px; padding: 10px; background: #9333ea; border: none; border-radius: 10px; color: white; font-size: 13px; font-weight: 700; cursor: pointer; }
     .save-note-btn:hover { background: #a855f7; }
-
     .ai-btn { padding: 6px 14px; background: #9333ea; border: none; border-radius: 20px; color: white; font-size: 12px; font-weight: 700; cursor: pointer; }
     .ai-btn:disabled { opacity: 0.5; cursor: default; }
-    .ai-result { font-size: 13px; color: #f3e8ff; line-height: 1.7; margin-top: 10px; }
+    .ai-result { font-size: 13px; color: #f3e8ff; line-height: 1.75; margin-top: 10px; white-space: pre-wrap; }
     .ai-placeholder { font-size: 13px; color: #4b5563; font-style: italic; }
-
     .history-entry { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
     .history-day-link { font-size: 11px; color: #c084fc; font-weight: 700; cursor: pointer; margin-bottom: 6px; }
     .history-day-link:hover { color: white; }
     .history-note-text { font-size: 13px; color: rgba(255,255,255,0.88); line-height: 1.6; }
     .history-note-date { font-size: 10px; color: #6b7280; margin-top: 4px; }
-
     .day-nav { display: flex; gap: 10px; margin-top: 4px; }
     .nav-btn { flex: 1; padding: 12px; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
     .nav-prev { background: rgba(255,255,255,0.08); color: #9ca3af; }
     .nav-prev:hover { background: rgba(255,255,255,0.12); }
     .nav-next { background: #9333ea; color: white; }
     .nav-next:hover { background: #a855f7; }
-
     .empty-state { text-align: center; color: #4b5563; padding: 40px 0; font-size: 13px; }
     .empty-state .e-icon { font-size: 36px; margin-bottom: 10px; }
   </style>
 </head>
 <body>
 
-<!-- LIST VIEW -->
 <div id="viewList" class="view active">
-  <a class="back-btn" href="../index.html">← Bible Study Hub</a>
+  <a class="back-btn" href="https://fletch1980.github.io/Bible_study/">← Bible Study Hub</a>
   <div class="plan-header">
     <div class="icon">🎵</div>
     <h1>Psalms & Proverbs</h1>
@@ -119,7 +106,6 @@
   <div id="dayList"></div>
 </div>
 
-<!-- DAY VIEW -->
 <div id="viewDay" class="view">
   <a class="back-btn" href="#" onclick="showList();return false;">← All Days</a>
   <div class="day-header">
@@ -133,18 +119,9 @@
     </div>
     <div class="day-focus" id="dayFocus"></div>
   </div>
-  <div class="section-card teaching">
-    <div class="section-label">📖 Teaching</div>
-    <div id="dayTeaching"></div>
-  </div>
-  <div class="section-card verses">
-    <div class="section-label">🔑 Key Verses</div>
-    <div id="dayVerses"></div>
-  </div>
-  <div class="section-card questions">
-    <div class="section-label">🤔 Study Questions</div>
-    <div id="dayQuestions"></div>
-  </div>
+  <div class="section-card teaching"><div class="section-label">📖 Teaching</div><div id="dayTeaching"></div></div>
+  <div class="section-card verses"><div class="section-label">🔑 Key Verses</div><div id="dayVerses"></div></div>
+  <div class="section-card questions"><div class="section-label">🤔 Study Questions</div><div id="dayQuestions"></div></div>
   <div class="section-card notes">
     <div class="section-label">✍️ My Notes</div>
     <div id="notesList"></div>
@@ -164,7 +141,6 @@
   </div>
 </div>
 
-<!-- HISTORY VIEW -->
 <div id="viewHistory" class="view">
   <a class="back-btn" href="#" onclick="showList();return false;">← All Days</a>
   <h2 style="font-size:18px;font-weight:900;margin-bottom:4px;">📝 Notes History</h2>
@@ -210,252 +186,169 @@ var PLAN = {
   ]
 };
 
-// ── Storage ────────────────────────────────────────────────────────────────
-function getData() {
-  try { return JSON.parse(localStorage.getItem(PLAN.storageKey) || '{}'); } catch(e) { return {}; }
-}
-function saveData(d) {
-  try { localStorage.setItem(PLAN.storageKey, JSON.stringify(d)); } catch(e) {}
-}
+function getData(){ try{ return JSON.parse(localStorage.getItem(PLAN.storageKey)||'{}'); }catch(e){ return {}; } }
+function saveData(d){ try{ localStorage.setItem(PLAN.storageKey,JSON.stringify(d)); }catch(e){} }
 
-function syncCalendar(isDone) {
-  var CAL_KEY = 'bsh-calendar-v1';
-  var calId = 'psalms';
-  try {
-    var cal = JSON.parse(localStorage.getItem(CAL_KEY) || '{}');
-    var t = new Date();
-    var iso = t.getFullYear() + '-' + (t.getMonth()+1<10?'0':'') + (t.getMonth()+1) + '-' + (t.getDate()<10?'0':'') + t.getDate();
-    if (!cal[iso]) cal[iso] = [];
-    var idx = cal[iso].indexOf(calId);
-    if (isDone && idx === -1) cal[iso].push(calId);
-    if (!isDone && idx !== -1) cal[iso].splice(idx, 1);
-    if (!cal[iso].length) delete cal[iso];
-    localStorage.setItem(CAL_KEY, JSON.stringify(cal));
-  } catch(e) {}
+function syncCalendar(isDone){
+  var CAL_KEY='bsh-calendar-v1', calId='psalms';
+  try{
+    var cal=JSON.parse(localStorage.getItem(CAL_KEY)||'{}');
+    var t=new Date(), iso=t.getFullYear()+'-'+(t.getMonth()+1<10?'0':'')+(t.getMonth()+1)+'-'+(t.getDate()<10?'0':'')+t.getDate();
+    if(!cal[iso]) cal[iso]=[];
+    var idx=cal[iso].indexOf(calId);
+    if(isDone&&idx===-1) cal[iso].push(calId);
+    if(!isDone&&idx!==-1) cal[iso].splice(idx,1);
+    if(!cal[iso].length) delete cal[iso];
+    localStorage.setItem(CAL_KEY,JSON.stringify(cal));
+  }catch(e){}
 }
 
-// ── State ──────────────────────────────────────────────────────────────────
-var currentDayIdx = 0;
-var confirmingDelete = null;
+var currentDayIdx=0, confirmingDelete=null;
 
-// ── Views ──────────────────────────────────────────────────────────────────
-function showView(id) {
-  document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-}
-function showList()    { renderList(); showView('viewList'); }
-function showHistory() { renderHistory(); showView('viewHistory'); }
-function showDay(idx)  { currentDayIdx = idx; renderDay(); showView('viewDay'); }
+function showView(id){ document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); }); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+function showList(){ renderList(); showView('viewList'); }
+function showHistory(){ renderHistory(); showView('viewHistory'); }
+function showDay(idx){ currentDayIdx=idx; renderDay(); showView('viewDay'); }
 
-// ── Render list ────────────────────────────────────────────────────────────
-function renderList() {
-  var data = getData();
-  var completed = data.completed || {};
-  var notes = data.notes || {};
-  var doneCount = Object.keys(completed).filter(function(k) { return completed[k]; }).length;
-  var total = PLAN.days.length;
-  var pct = Math.round(doneCount / total * 100);
-
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = doneCount + ' / ' + total + ' days completed';
-
-  var totalNotes = Object.values(notes).reduce(function(s, a) { return s + (a ? a.length : 0); }, 0);
-  document.getElementById('notesCount').textContent = totalNotes + ' note' + (totalNotes !== 1 ? 's' : '') + ' \u203a';
-
-  var html = '';
-  PLAN.days.forEach(function(day, i) {
-    var done = !!completed[i];
-    var dayNotes = notes[i] || [];
-    html += '<div class="day-item' + (done ? ' done' : '') + '" onclick="showDay(' + i + ')">'
-      + '<div class="check-circle" onclick="event.stopPropagation();quickToggle(' + i + ')">' + (done ? '✓' : '') + '</div>'
-      + '<div class="day-info">'
-      + '<div class="day-num">Day ' + day.day + '</div>'
-      + '<div class="day-passage">' + day.passage + '</div>'
-      + '<div class="day-title">' + day.title + '</div>'
-      + '</div>'
-      + (dayNotes.length ? '<div class="note-badge">' + dayNotes.length + ' note' + (dayNotes.length > 1 ? 's' : '') + '</div>' : '')
-      + '</div>';
+function renderList(){
+  var data=getData(), completed=data.completed||{}, notes=data.notes||{};
+  var doneCount=Object.keys(completed).filter(function(k){ return completed[k]; }).length;
+  var total=PLAN.days.length, pct=Math.round(doneCount/total*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressLabel').textContent=doneCount+' / '+total+' days completed';
+  var totalNotes=Object.values(notes).reduce(function(s,a){ return s+(a?a.length:0); },0);
+  document.getElementById('notesCount').textContent=totalNotes+' note'+(totalNotes!==1?'s':'')+' \u203a';
+  var html='';
+  PLAN.days.forEach(function(day,i){
+    var done=!!completed[i], dayNotes=notes[i]||[];
+    html+='<div class="day-item'+(done?' done':'')+'" onclick="showDay('+i+')">'
+      +'<div class="check-circle" onclick="event.stopPropagation();quickToggle('+i+')">'+(done?'✓':'')+'</div>'
+      +'<div class="day-info"><div class="day-num">Day '+day.day+'</div>'
+      +'<div class="day-passage">'+day.passage+'</div>'
+      +'<div class="day-title">'+day.title+'</div></div>'
+      +(dayNotes.length?'<div class="note-badge">'+dayNotes.length+' note'+(dayNotes.length>1?'s':'')+'</div>':'')
+      +'</div>';
   });
-  document.getElementById('dayList').innerHTML = html;
+  document.getElementById('dayList').innerHTML=html;
 }
 
-function quickToggle(idx) {
-  var data = getData();
-  if (!data.completed) data.completed = {};
-  data.completed[idx] = !data.completed[idx];
-  saveData(data);
-  syncCalendar(data.completed[idx]);
-  renderList();
+function quickToggle(idx){
+  var data=getData();
+  if(!data.completed) data.completed={};
+  data.completed[idx]=!data.completed[idx];
+  saveData(data); syncCalendar(data.completed[idx]); renderList();
 }
 
-// ── Render day ─────────────────────────────────────────────────────────────
-function renderDay() {
-  var data = getData();
-  var completed = data.completed || {};
-  var day = PLAN.days[currentDayIdx];
-  var done = !!completed[currentDayIdx];
-
-  document.getElementById('dayMeta').textContent = 'Day ' + day.day + ' of ' + PLAN.days.length;
-  document.getElementById('dayTitle').textContent = day.title;
-  document.getElementById('dayPassage').textContent = day.passage;
-  document.getElementById('dayFocus').textContent = day.focus;
-
-  var btn = document.getElementById('doneBtn');
-  btn.textContent = done ? '✓ Done' : 'Mark Done';
-  btn.className = 'done-btn' + (done ? ' is-done' : '');
-
-  document.getElementById('dayTeaching').innerHTML = day.teaching.split('\n\n').map(function(p) {
-    return '<div class="teaching-para">' + p + '</div>';
-  }).join('');
-
-  document.getElementById('dayVerses').innerHTML = day.keyVerses.map(function(v) {
-    return '<div class="verse-item">' + v + '</div>';
-  }).join('');
-
-  document.getElementById('dayQuestions').innerHTML = day.questions.map(function(q, i) {
-    return '<div class="question-item"><div class="q-num">' + (i+1) + '</div><div class="q-text">' + q + '</div></div>';
-  }).join('');
-
+function renderDay(){
+  var data=getData(), completed=data.completed||{}, day=PLAN.days[currentDayIdx], done=!!completed[currentDayIdx];
+  document.getElementById('dayMeta').textContent='Day '+day.day+' of '+PLAN.days.length;
+  document.getElementById('dayTitle').textContent=day.title;
+  document.getElementById('dayPassage').textContent=day.passage;
+  document.getElementById('dayFocus').textContent=day.focus;
+  var btn=document.getElementById('doneBtn');
+  btn.textContent=done?'✓ Done':'Mark Done';
+  btn.className='done-btn'+(done?' is-done':'');
+  document.getElementById('dayTeaching').innerHTML=day.teaching.split('\n\n').map(function(p){ return '<div class="teaching-para">'+p+'</div>'; }).join('');
+  document.getElementById('dayVerses').innerHTML=day.keyVerses.map(function(v){ return '<div class="verse-item">'+v+'</div>'; }).join('');
+  document.getElementById('dayQuestions').innerHTML=day.questions.map(function(q,i){ return '<div class="question-item"><div class="q-num">'+(i+1)+'</div><div class="q-text">'+q+'</div></div>'; }).join('');
   renderNotes();
-
-  document.getElementById('prevBtn').style.display = currentDayIdx > 0 ? 'block' : 'none';
-  document.getElementById('nextBtn').style.display = currentDayIdx < PLAN.days.length - 1 ? 'block' : 'none';
-
-  document.getElementById('aiResult').innerHTML = '<div class="ai-placeholder">Tap "Get Insight" for cross-references, historical context & extra commentary.</div>';
-  var aiBtn = document.getElementById('aiBtn');
-  aiBtn.disabled = false;
-  aiBtn.textContent = 'Get Insight';
-  aiBtn.style.display = 'inline-block';
-
-  document.getElementById('noteInput').value = '';
-  confirmingDelete = null;
+  document.getElementById('prevBtn').style.display=currentDayIdx>0?'block':'none';
+  document.getElementById('nextBtn').style.display=currentDayIdx<PLAN.days.length-1?'block':'none';
+  document.getElementById('aiResult').innerHTML='<div class="ai-placeholder">Tap "Get Insight" for cross-references, historical context & extra commentary.</div>';
+  var aiBtn=document.getElementById('aiBtn');
+  aiBtn.disabled=false; aiBtn.textContent='Get Insight'; aiBtn.style.display='inline-block';
+  document.getElementById('noteInput').value='';
+  confirmingDelete=null;
 }
 
-function renderNotes() {
-  var data = getData();
-  var dayNotes = (data.notes || {})[currentDayIdx] || [];
-  var html = '';
-  dayNotes.forEach(function(n, ni) {
-    html += '<div class="note-entry">'
-      + '<div class="note-text">' + escHtml(n.text) + '</div>'
-      + '<div class="note-meta"><span>' + n.date + '</span>'
-      + '<button class="note-delete" onclick="askDelete(' + ni + ')">🗑</button></div>'
-      + (confirmingDelete === ni
-        ? '<div class="confirm-delete"><span>Delete this note?</span>'
-          + '<button class="confirm-yes" onclick="doDelete(' + ni + ')">Delete</button>'
-          + '<button class="confirm-no" onclick="cancelDelete()">Cancel</button></div>'
-        : '')
-      + '</div>';
+function renderNotes(){
+  var data=getData(), dayNotes=(data.notes||{})[currentDayIdx]||[], html='';
+  dayNotes.forEach(function(n,ni){
+    html+='<div class="note-entry"><div class="note-text">'+escHtml(n.text)+'</div>'
+      +'<div class="note-meta"><span>'+n.date+'</span><button class="note-delete" onclick="askDelete('+ni+')">🗑</button></div>'
+      +(confirmingDelete===ni?'<div class="confirm-delete"><span>Delete this note?</span><button class="confirm-yes" onclick="doDelete('+ni+')">Delete</button><button class="confirm-no" onclick="cancelDelete()">Cancel</button></div>':'')
+      +'</div>';
   });
-  document.getElementById('notesList').innerHTML = html;
+  document.getElementById('notesList').innerHTML=html;
 }
 
-function askDelete(ni)  { confirmingDelete = ni; renderNotes(); }
-function cancelDelete() { confirmingDelete = null; renderNotes(); }
-function doDelete(ni) {
-  var data = getData();
-  if (!data.notes) data.notes = {};
-  if (!data.notes[currentDayIdx]) data.notes[currentDayIdx] = [];
-  data.notes[currentDayIdx].splice(ni, 1);
-  saveData(data);
-  confirmingDelete = null;
-  renderNotes();
+function askDelete(ni){ confirmingDelete=ni; renderNotes(); }
+function cancelDelete(){ confirmingDelete=null; renderNotes(); }
+function doDelete(ni){
+  var data=getData();
+  if(!data.notes) data.notes={};
+  if(!data.notes[currentDayIdx]) data.notes[currentDayIdx]=[];
+  data.notes[currentDayIdx].splice(ni,1);
+  saveData(data); confirmingDelete=null; renderNotes();
 }
 
-function saveNote() {
-  var text = document.getElementById('noteInput').value.trim();
-  if (!text) return;
-  var data = getData();
-  if (!data.notes) data.notes = {};
-  if (!data.notes[currentDayIdx]) data.notes[currentDayIdx] = [];
-  data.notes[currentDayIdx].push({ text: text, date: new Date().toLocaleString() });
-  saveData(data);
-  document.getElementById('noteInput').value = '';
-  confirmingDelete = null;
-  renderNotes();
+function saveNote(){
+  var text=document.getElementById('noteInput').value.trim();
+  if(!text) return;
+  var data=getData();
+  if(!data.notes) data.notes={};
+  if(!data.notes[currentDayIdx]) data.notes[currentDayIdx]=[];
+  data.notes[currentDayIdx].push({text:text,date:new Date().toLocaleString()});
+  saveData(data); document.getElementById('noteInput').value=''; confirmingDelete=null; renderNotes();
 }
 
-function toggleDone() {
-  var data = getData();
-  if (!data.completed) data.completed = {};
-  data.completed[currentDayIdx] = !data.completed[currentDayIdx];
-  saveData(data);
-  syncCalendar(data.completed[currentDayIdx]);
-  renderDay();
+function toggleDone(){
+  var data=getData();
+  if(!data.completed) data.completed={};
+  data.completed[currentDayIdx]=!data.completed[currentDayIdx];
+  saveData(data); syncCalendar(data.completed[currentDayIdx]); renderDay();
 }
 
-function navDay(dir) {
-  currentDayIdx += dir;
-  renderDay();
-  window.scrollTo(0, 0);
-}
+function navDay(dir){ currentDayIdx+=dir; renderDay(); window.scrollTo(0,0); }
 
-// ── History ────────────────────────────────────────────────────────────────
-function renderHistory() {
-  var data = getData();
-  var notes = data.notes || {};
-  var all = [];
-  Object.keys(notes).forEach(function(idx) {
-    (notes[idx] || []).forEach(function(n, ni) {
-      all.push({ idx: parseInt(idx), ni: ni, note: n });
-    });
-  });
-  all.sort(function(a, b) { return new Date(b.note.date) - new Date(a.note.date); });
-
-  document.getElementById('historySubtitle').textContent = all.length + ' note' + (all.length !== 1 ? 's' : '') + ' across ' + PLAN.name;
-
-  if (!all.length) {
-    document.getElementById('historyList').innerHTML = '<div class="empty-state"><div class="e-icon">✍️</div><p>No notes yet.</p><p style="margin-top:6px;">Go into any day and save a note — it will appear here.</p></div>';
-    return;
-  }
-
-  document.getElementById('historyList').innerHTML = all.map(function(item) {
-    var day = PLAN.days[item.idx];
+function renderHistory(){
+  var data=getData(), notes=data.notes||{}, all=[];
+  Object.keys(notes).forEach(function(idx){ (notes[idx]||[]).forEach(function(n,ni){ all.push({idx:parseInt(idx),ni:ni,note:n}); }); });
+  all.sort(function(a,b){ return new Date(b.note.date)-new Date(a.note.date); });
+  document.getElementById('historySubtitle').textContent=all.length+' note'+(all.length!==1?'s':'')+' across '+PLAN.name;
+  if(!all.length){ document.getElementById('historyList').innerHTML='<div class="empty-state"><div class="e-icon">✍️</div><p>No notes yet.</p></div>'; return; }
+  document.getElementById('historyList').innerHTML=all.map(function(item){
+    var day=PLAN.days[item.idx];
     return '<div class="history-entry">'
-      + '<div class="history-day-link" onclick="showDay(' + item.idx + ')">Day ' + day.day + ' · ' + day.passage + ' — ' + day.title + ' \u203a</div>'
-      + '<div class="history-note-text">' + escHtml(item.note.text) + '</div>'
-      + '<div class="history-note-date">' + item.note.date + '</div>'
-      + '</div>';
+      +'<div class="history-day-link" onclick="showDay('+item.idx+')">Day '+day.day+' · '+day.passage+' — '+day.title+' \u203a</div>'
+      +'<div class="history-note-text">'+escHtml(item.note.text)+'</div>'
+      +'<div class="history-note-date">'+item.note.date+'</div>'
+      +'</div>';
   }).join('');
 }
 
-// ── AI Insight ─────────────────────────────────────────────────────────────
-function getInsight() {
-  var day = PLAN.days[currentDayIdx];
-  var btn = document.getElementById('aiBtn');
-  btn.disabled = true;
-  btn.textContent = 'Loading...';
-  document.getElementById('aiResult').innerHTML = '<div class="ai-placeholder">Thinking...</div>';
-
-  fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: 'You are a warm Bible teacher. The student is studying ' + day.passage + ' — "' + day.title + '" in a Psalms and Proverbs reading plan. Give 3–4 sentences of deeper insight: a cross-reference to another Scripture, a cultural or historical detail, and one personal application. Rich but accessible.' }]
+function getInsight(){
+  var day=PLAN.days[currentDayIdx];
+  var btn=document.getElementById('aiBtn');
+  btn.disabled=true; btn.textContent='Loading...';
+  document.getElementById('aiResult').innerHTML='<div class="ai-placeholder">Thinking...</div>';
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      messages:[{role:'user',content:'You are a warm, knowledgeable Bible teacher. The student is studying '+day.passage+' — "'+day.title+'" in a Psalms and Proverbs reading plan. Give a rich but accessible response covering: (1) one cultural or historical detail that makes this passage come alive, (2) a meaningful cross-reference to another Scripture that deepens understanding, (3) one word from the original Hebrew that unlocks something in the text, and (4) a specific personal application for today. Keep it to 4 short paragraphs, warm and conversational.'}]
     })
   })
-  .then(function(r) { return r.json(); })
-  .then(function(d) {
-    var text = (d.content && d.content[0] && d.content[0].text) || 'Could not load insight.';
-    document.getElementById('aiResult').innerHTML = '<div class="ai-result">' + escHtml(text) + '</div>';
-    btn.style.display = 'none';
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    var text=(d.content&&d.content[0]&&d.content[0].text)||'Could not load insight.';
+    document.getElementById('aiResult').innerHTML='<div class="ai-result">'+escHtml(text)+'</div>';
+    btn.style.display='none';
   })
-  .catch(function() {
-    document.getElementById('aiResult').innerHTML = '<div class="ai-placeholder">Could not load. Please try again.</div>';
-    btn.disabled = false;
-    btn.textContent = 'Try Again';
+  .catch(function(err){
+    console.error('AI error:',err);
+    document.getElementById('aiResult').innerHTML='<div class="ai-placeholder">Could not connect. Please try again.</div>';
+    btn.disabled=false; btn.textContent='Try Again';
   });
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── Init ───────────────────────────────────────────────────────────────────
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 renderList();
 </script>
 </body>
